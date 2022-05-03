@@ -1,0 +1,16 @@
+{
+  "name": "booking_system_be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "hoching87",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
