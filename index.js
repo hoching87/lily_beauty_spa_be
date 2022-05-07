@@ -1,38 +1,47 @@
-import express from "express"
+import express from 'express'
 import 'dotenv/config'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 
 const app = express()
-app.use(bodyParser.urlencoded({ extended: false }))
-const port = 3030
-connectMongoDB().catch(err => console.log(err));
+const port = process.env.PORT
+const mongoURL =
+  process.env.mode == 'production'
+    ? process.env.MONGODB_URI
+    : process.env.MONGODB_URI_DEV
 
-async function connectMongoDB() {
-    await mongoose.connect(process.env.MONGODB_URI_DEV, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-    });
-};
-
+// Listen to port
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+  console.log(`App listening on port ${port}`)
 })
 
-app.get('/', (req, res) => {
-    res.json({ root: "this is root" })
-})
+// Middleware to parse request body
+app.use(bodyParser.urlencoded({ extended: false }))
 
-import User from "./models/user.js"
+// Connect to MongoDB
+connectMongoDB().catch((err) => console.log(err))
+async function connectMongoDB() {
+  console.log('mongoURL', mongoURL)
+  await mongoose.connect(mongoURL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
+}
 
-app.get('/mongo', async (req, res) => {
-    const query = await User.findOne({})
-    res.json(query)
-})
-
-app.post('/body', (req, res) => {
-    res.json(req.body);
-});
-
+// Authentication router
 import auth from './router/auth.js'
 app.use('/auth', auth)
+
+app.get('/', (req, res) => {
+  res.json({ root: 'this is root' })
+})
+
+import jwtParser from './router/jwtParser.js'
+app.get('/jwt/:id', jwtParser, async (req, res) => {
+  const user = req.user // get username from req.user property created by isLoggedIn middleware
+  const _id = req.params.id // get id from params
+  //send target todo
+  res.json({
+    user: user
+  })
+})
