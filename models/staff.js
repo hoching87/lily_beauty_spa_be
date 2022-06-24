@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema(
+const staffSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -14,6 +14,6 @@ const userSchema = new mongoose.Schema(
   { versionKey: false }
 )
 
-const User = mongoose.models.User || mongoose.model('User', userSchema)
+const Staff = mongoose.models.Staff || mongoose.model('Staff', staffSchema)
 
-export default User
+export default Staff
